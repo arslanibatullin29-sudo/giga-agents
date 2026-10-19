@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Бриф процесса для проектирования агента GigaCowork",
+  "type": "object",
+  "required": ["процесс", "результат", "пользователи", "входы", "контур_данных", "текущий_процесс", "запись", "частота", "границы", "персональные_данные", "приёмка", "решение"],
+  "properties": {
+    "процесс": {"type": "string", "description": "Название процесса одной фразой"},
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Короткий идентификатор латиницей для папки /session/<slug>/"},
+    "результат": {
+      "type": "object",
+      "required": ["что", "формат"],
+      "properties": {
+        "что": {"type": "string"},
+        "формат": {"type": "string", "enum": ["ответ в чате", "таблица", "xlsx", "docx", "pptx", "pdf", "письмо-черновик", "запись в системе", "холст", "другое"]},
+        "эталон": {"type": "string", "description": "Пример хорошего результата или имя файла с ним"}
+      }
+    },
+    "пользователи": {
+      "type": "object",
+      "required": ["кто", "где"],
+      "properties": {
+        "кто": {"type": "string"},
+        "где": {"type": "string", "description": "личный агент или пространство «…»"}
+      }
+    },
+    "входы": {
+      "type": "object",
+      "properties": {
+        "от_пользователя": {"type": "array", "items": {"type": "string"}, "description": "Файлы (форматы), тексты, параметры"},
+        "коннекторы": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["название", "инструменты"],
+            "properties": {
+              "название": {"type": "string"},
+              "инструменты": {"type": "array", "items": {"type": "string"}, "description": "Из карточки коннектора; пусто — «проверить инструмент»"}
+            }
+          }
+        },
+        "документы_пространства": {"type": "boolean"}
+      }
+    },
+    "контур_данных": {"type": "string", "enum": ["только файлы и указанные системы", "плюс веб-поиск", "плюс общие знания модели"]},
+    "текущий_процесс": {
+      "type": "object",
+      "properties": {
+        "шаги": {"type": "array", "items": {"type": "string"}},
+        "правила_и_нормативы": {"type": "array", "items": {"type": "string"}},
+        "критерии_качества": {"type": "array", "items": {"type": "string"}},
+        "источник": {"type": "string", "description": "Регламент, чек-лист, интервью"}
+      }
+    },
+    "запись": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["действие", "система", "кто_подтверждает"],
+        "properties": {
+          "действие": {"type": "string"},
+          "система": {"type": "string"},
+          "кто_подтверждает": {"type": "string"}
+        }
+      }
+    },
+    "частота": {"type": "string", "enum": ["по запросу", "командой", "по расписанию", "по событию"]},
+    "расписание": {"type": "string", "description": "Например «каждый день 09:15, 13:15, 18:15»"},
+    "границы": {
+      "type": "object",
+      "properties": {
+        "запрещено": {"type": "array", "items": {"type": "string"}},
+        "соседи": {"type": "array", "items": {"type": "string"}, "description": "Агенты и навыки, с которыми нельзя пересекаться"}
+      }
+    },
+    "персональные_данные": {
+      "type": "object",
+      "required": ["есть"],
+      "properties": {
+        "есть": {"type": "boolean"},
+        "какие": {"type": "array", "items": {"type": "string"}},
+        "минимизация": {"type": "string"}
+      }
+    },
+    "приёмка": {"type": "array", "minItems": 3, "maxItems": 5, "items": {"type": "string"}},
+    "решение": {
+      "type": "object",
+      "required": ["архитектура", "обоснование"],
+      "properties": {
+        "архитектура": {"type": "string", "enum": ["запрос", "команда", "навык", "агент-оркестратор", "регулярная задача", "несколько агентов", "плагин"]},
+        "обоснование": {"type": "string"},
+        "навыки": {"type": "array", "items": {"type": "string"}},
+        "команды": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "допущения": {"type": "array", "items": {"type": "string"}},
+    "открытые_вопросы": {"type": "array", "items": {"type": "string"}}
+  }
+}
